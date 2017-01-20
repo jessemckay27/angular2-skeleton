@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
      <h1>To Do List for {{month}}/{{day}}/{{year}}</h1>
      <h3>{{currentFocus}}</h3>
      <ul>
-       <li *ngFor="let currentTask of tasks">{{currentTask.description}}   <button (click)="editTask()">Edit!</button></li>
+       <li [class]="priorityColor(currentTask)" (click)="isDone(currentTask)" *ngFor="let currentTask of tasks">{{currentTask.description}}  <button (click)="editTask()">Edit!</button></li>
      </ul>
    </div>
   `
@@ -34,6 +34,16 @@ export class AppComponent {
       alert("This task is done!");
     } else {
       alert("This task is not done. Better get to work!");
+    }
+  }
+
+  priorityColor(currentTask){
+    if (currentTask.priority === 3){
+      return "bg-danger";
+    } else if (currentTask.priority === 2) {
+      return  "bg-warning";
+    } else {
+      return "bg-info";
     }
   }
 
