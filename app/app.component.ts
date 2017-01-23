@@ -1,15 +1,17 @@
 import { Component } from '@angular/core';
+import { Task } from './task.model';
 
 @Component({
   selector: 'app-root',
- template: `
+  template: `
     <div class="container">
-     <h1>To Do List for {{month}}/{{day}}/{{year}}</h1>
-     <h3>{{currentFocus}}</h3>
-     <ul>
-       <li [class]="priorityColor(currentTask)" (click)="isDone(currentTask)" *ngFor="let currentTask of tasks">{{currentTask.description}}  <button (click)="editTask()">Edit!</button></li>
-     </ul>
-   </div>
+      <h1>To Do List for {{month}}/{{day}}/{{year}}</h1>
+      <h3>{{currentFocus}}</h3>
+      <task-list [childTaskList]="masterTaskList" (clickSender)="editTask($event)"></task-list>
+      <hr>
+      <edit-task [childSelectedTask]="selectedTask" (doneClickedSender)="finishedEditing()"></edit-task>
+      <new-task (newTaskSender)="addTask($event)"></new-task>
+    </div>
   `
 })
 
@@ -19,37 +21,24 @@ export class AppComponent {
   month: number = this.currentTime.getMonth() + 1;
   day: number = this.currentTime.getDate();
   year: number = this.currentTime.getFullYear();
-  tasks: Task[] = [
+  selectedTask = null;
+
+  masterTaskList: Task[] = [
     new Task('Finish weekend Angular homework for Epicodus course', 3),
     new Task('Begin brainstorming possible JavaScript group projects', 2),
     new Task('Add README file to last few Angular repos on GitHub', 2)
   ];
 
-  editTask() {
-   alert("You just requested to edit a Task!");
- }
-
- isDone(clickedTask: Task) {
-    if(clickedTask.done === true) {
-      alert("This task is done!");
-    } else {
-      alert("This task is not done. Better get to work!");
-    }
+  editTask(clickedTask) {
+    this.selectedTask = clickedTask;
   }
 
-  priorityColor(currentTask){
-    if (currentTask.priority === 3){
-      return "bg-danger";
-    } else if (currentTask.priority === 2) {
-      return  "bg-warning";
-    } else {
-      return "bg-info";
-    }
+  finishedEditing() {
+    this.selectedTask = null;
   }
 
-}
+  addTask(newTaskFromChild: Task) {
+    this.masterTaskList.push(newTaskFromChild);
+  }
 
-export class Task {
-  public done: boolean = false;
-  constructor(public description: string, public priority: number) {   }
 }
